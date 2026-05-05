@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Товары - Складской учет{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-1">Товары</h1>
+        <p class="text-muted mb-0">Всего: {{ products|length }} товаров</p>
+    </div>
+    <a href="{{ url_for('add_product') }}" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-2"></i>Добавить
+    </a>
+</div>
+
+<form method="get" class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="input-group">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="bi bi-search text-muted"></i>
+            </span>
+            <input type="text" name="search" class="form-control border-start-0" placeholder="Поиск по названию..."
+                   value="{{ search }}">
+        </div>
+    </div>
+    <div class="col-md-4">
+        <select name="category" class="form-select">
+            <option value="">Все категории</option>
+            {% for cat in categories %}
+            <option value="{{ cat.id }}" {{ 'selected' if selected_category == cat.id|string else '' }}>{{ cat.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-outline-primary w-100">
+            <i class="bi bi-funnel me-1"></i>Найти
+        </button>
+    </div>
+</form>
+
+<div class="row g-4">
+    {% for product in products %}
+    <div class="col-md-6 col-lg-4 col-xl-3">
+        <div class="card h-100">
+            {% if product.image %}
+            <img src="{{ url_for('static', filename='uploads/' + product.image) }}"
+                 class="card-img-top" style="height: 200px; object-fit: cover;"
+                 alt="{{ product.name }}">
+            {% else %}
+            <div class="card-img-top d-flex align-items-center justify-content-center bg-light" style="height: 200px;">
+                <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+            </div>
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text">
+                    {% if product.category %}
+                        <span class="badge bg-primary bg-opacity-10 text-primary">{{ product.category.name }}</span>
+                    {% endif %}
+                    {% if product.size %}
+                        <span class="badge bg-secondary bg-opacity-10 text-secondary">Размер: {{ product.size }}</span>
+                    {% endif %}
+                    {% if product.color %}
+                        <span class="badge bg-info bg-opacity-10 text-info">{{ product.color }}</span>
+                    {% endif %}
+                </p>
+                <p class="card-text">
+                    <strong class="{{ 'text-danger' if product.quantity == 0 else 'text-success' }}">
+                        {{ product.quantity }} шт
+                    </strong>
+                </p>
+            </div>
+            <div class="card-footer bg-white border-top-0 d-flex gap-1">
+                <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-pencil"></i>
+                </a>
+                <form method="post" action="{{ url_for('delete_product', product_id=product.id) }}"
+                      class="d-inline" onsubmit="return confirm('Удалить?');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="text-center text-muted py-5">
+            <i class="bi bi-inbox-fill fs-3 d-block mb-2"></i>
+            Товаров пока нет.
+            <div class="mt-2">
+                <a href="{{ url_for('add_product') }}" class="btn btn-sm btn-primary">Добавить первый товар</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
