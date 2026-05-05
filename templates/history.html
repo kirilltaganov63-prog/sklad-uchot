@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}История - Складской учет{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">История операций</h1>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th>Дата</th>
+                        <th>Товар</th>
+                        <th>Тип</th>
+                        <th>Количество</th>
+                        <th>Кто</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for op in operations %}
+                    <tr>
+                        <td class="text-nowrap">{{ op.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                {% if op.product.image %}
+                                <img src="{{ url_for('static', filename='uploads/' + op.product.image) }}"
+                                     class="rounded me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                {% endif %}
+                                <strong>{{ op.product.name }}</strong>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge bg-{{ 'success' if op.operation_type == 'income' else 'danger' }}">
+                                {% if op.operation_type == 'income' %}
+                                    <i class="bi bi-arrow-down me-1"></i>Приход
+                                {% else %}
+                                    <i class="bi bi-arrow-up me-1"></i>Расход
+                                {% endif %}
+                            </span>
+                        </td>
+                        <td class="fw-bold">{{ op.quantity }} шт</td>
+                        <td>{{ op.user_name or '-' }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-5">
+                            <i class="bi bi-clock-history fs-3 d-block mb-2"></i>
+                            Операций пока нет.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

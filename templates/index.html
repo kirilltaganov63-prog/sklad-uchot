@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}Главная - Складской учет{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-1">Склад</h1>
+    </div>
+    <a href="{{ url_for('income') }}" class="btn btn-success">
+        <i class="bi bi-plus-circle me-2"></i>Приход
+    </a>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-6 col-lg-4">
+        <div class="card bg-primary text-white h-100">
+            <div class="card-body d-flex align-items-center">
+                <div class="icon-wrapper bg-white bg-opacity-25 me-3">
+                    <i class="bi bi-box-seam text-white"></i>
+                </div>
+                <div>
+                    <h5 class="card-title">Всего товаров</h5>
+                    <h2 class="mb-0">{{ total_products }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="card bg-success text-white h-100">
+            <div class="card-body d-flex align-items-center">
+                <div class="icon-wrapper bg-white bg-opacity-25 me-3">
+                    <i class="bi bi-calculator text-white"></i>
+                </div>
+                <div>
+                    <h5 class="card-title">Общее количество</h5>
+                    <h2 class="mb-0">{{ total_items }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="card bg-warning text-white h-100">
+            <div class="card-body d-flex align-items-center">
+                <div class="icon-wrapper bg-white bg-opacity-25 me-3">
+                    <i class="bi bi-exclamation-triangle text-white"></i>
+                </div>
+                <div>
+                    <h5 class="card-title">Закончились</h5>
+                    <h2 class="mb-0">{{ low_stock|length }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if low_stock %}
+<div class="card mb-4 border-warning">
+    <div class="card-header bg-warning bg-opacity-10 text-warning d-flex align-items-center">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong>Товары закончились</strong>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th>Товар</th>
+                        <th>Остаток</th>
+                        <th>Действие</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in low_stock %}
+                    <tr>
+                        <td>
+                            <strong>{{ product.name }}</strong>
+                            {% if product.category %}<br><small class="text-muted">{{ product.category.name }}</small>{% endif %}
+                        </td>
+                        <td class="text-danger fw-bold">{{ product.quantity }} шт</td>
+                        <td>
+                            <a href="{{ url_for('income') }}" class="btn btn-sm btn-outline-success">
+                                <i class="bi bi-arrow-down-circle"></i> Пополнить
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="card">
+    <div class="card-header d-flex align-items-center">
+        <i class="bi bi-clock-history me-2"></i>
+        <strong>Последние операции</strong>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th>Дата</th>
+                        <th>Товар</th>
+                        <th>Тип</th>
+                        <th>Количество</th>
+                        <th>Кто</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for op in recent_operations %}
+                    <tr>
+                        <td>{{ op.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                        <td>{{ op.product.name }}</td>
+                        <td>
+                            <span class="badge bg-{{ 'success' if op.operation_type == 'income' else 'danger' }}">
+                                {% if op.operation_type == 'income' %}
+                                    <i class="bi bi-arrow-down me-1"></i>Приход
+                                {% else %}
+                                    <i class="bi bi-arrow-up me-1"></i>Расход
+                                {% endif %}
+                            </span>
+                        </td>
+                        <td>{{ op.quantity }} шт</td>
+                        <td>{{ op.user_name or '-' }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">
+                            <i class="bi bi-inbox-fill fs-3 d-block mb-2"></i>
+                            Операций пока нет.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
