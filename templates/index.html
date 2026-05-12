@@ -79,7 +79,7 @@
                 <i class="bi bi-graph-up me-2"></i>Продано товаров
             </div>
             <div class="card-body text-center">
-                <h3>{{ total_sales_quantity }} шт</h3>
+                <h3 class="text-success">{{ total_sales_quantity }} шт</h3>
             </div>
         </div>
     </div>
@@ -89,7 +89,7 @@
                 <i class="bi bi-cash-stack me-2"></i>Выручка
             </div>
             <div class="card-body text-center">
-                <h3>{{ "{:.2f}".format(total_sales_amount) }} ₽</h3>
+                <h3 class="text-primary">{{ "{:.2f}".format(total_sales_amount) }} ₽</h3>
             </div>
         </div>
     </div>
@@ -99,7 +99,7 @@
                 <i class="bi bi-graph-up-arrow me-2"></i>Прибыль
             </div>
             <div class="card-body text-center">
-                <h3>{{ "{:.2f}".format(total_profit) }} ₽</h3>
+                <h3 class="text-danger">{{ "{:.2f}".format(total_profit) }} ₽</h3>
             </div>
         </div>
     </div>
@@ -114,14 +114,14 @@
         <div class="table-responsive">
             <table class="table mb-0">
                 <thead>
-                    <tr><th>Товар</th><th>Остаток</th><th>Действие</th></tr>
+                    <tr><th>Товар</th><th>Остаток</th><th>Действие</th>�
                 </thead>
                 <tbody>
                     {% for product in low_stock %}
                     <tr>
-                        <td><strong>{{ product.name }}</strong></td>
+                        <td><strong>{{ product.name }}</strong><br><small class="text-muted">{{ product.category.name if product.category else '' }}</small></td>
                         <td class="text-danger fw-bold">{{ product.quantity }} шт</td>
-                        <td><a href="{{ url_for('purchase') }}" class="btn btn-sm btn-outline-success">Закупить</a></td>
+                        <td><a href="{{ url_for('purchase') }}" class="btn btn-sm btn-outline-success"><i class="bi bi-truck"></i> Закупить</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -146,8 +146,8 @@
                 <tbody>
                     {% for op in recent_operations %}
                     <tr>
-                        <td>{{ op.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
-                        <td>{{ op.product.name }}</td>
+                        <td class="text-nowrap">{{ op.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                        <td><strong>{{ op.product.name }}</strong></td>
                         <td>
                             <span class="badge bg-{{ 'success' if op.operation_type == 'purchase' else 'primary' }}">
                                 {{ 'Закупка' if op.operation_type == 'purchase' else 'Продажа' }}
