@@ -1,73 +1,81 @@
 {% extends "base.html" %}
 
-{% block title %}{{ 'Редактирование' if action == 'edit' else 'Добавление' }} товара{% endblock %}
+{% block title %}Товары - Складской учет{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-lg-8">
-        <div class="card">
-            <div class="card-header">
-                <i class="bi bi-{{ 'pencil' if action == 'edit' else 'plus-circle' }} me-2"></i>
-                <strong>{{ 'Редактирование' if action == 'edit' else 'Добавление' }} товара</strong>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-1">Товары</h1>
+        <p class="text-muted mb-0">Всего: {{ products|length }} товаров</p>
+    </div>
+    <a href="{{ url_for('add_product') }}" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-2"></i>Добавить
+    </a>
+</div>
+
+<form method="get" class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="input-group">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="bi bi-search text-muted"></i>
+            </span>
+            <input type="text" name="search" class="form-control border-start-0" placeholder="Поиск по названию..." value="{{ search }}">
+        </div>
+    </div>
+    <div class="col-md-4">
+        <select name="category" class="form-select">
+            <option value="">Все категории</option>
+            {% for cat in categories %}
+            <option value="{{ cat.id }}" {{ 'selected' if selected_category == cat.id|string else '' }}>{{ cat.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-outline-primary w-100"><i class="bi bi-funnel me-1"></i>Найти</button>
+    </div>
+</form>
+
+<div class="row g-4">
+    {% for product in products %}
+    <div class="col-md-6 col-lg-4 col-xl-3">
+        <div class="card h-100">
+            {% if product.image %}
+            <img src="{{ url_for('static', filename='uploads/' + product.image) }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+            {% else %}
+            <div class="card-img-top d-flex align-items-center justify-content-center bg-light" style="height: 200px;">
+                <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
             </div>
+            {% endif %}
             <div class="card-body">
-                <form method="post" enctype="multipart/form-data">
-                    <div class="row">
-                        <div class="col-md-8 mb-3">
-                            <label class="form-label">Название *</label>
-                            <input type="text" name="name" class="form-control" required value="{{ product.name if product else '' }}">
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Категория</label>
-                            <select name="category_id" class="form-select">
-                                <option value="">Без категории</option>
-                                {% for cat in categories %}
-                                <option value="{{ cat.id }}" {{ 'selected' if product and product.category_id == cat.id else '' }}>{{ cat.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Размер</label>
-                            <input type="text" name="size" class="form-control" value="{{ product.size if product else '' }}">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Цвет</label>
-                            <input type="text" name="color" class="form-control" value="{{ product.color if product else '' }}">
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Закупочная цена (₽)</label>
-                            <input type="number" step="0.01" name="cost_price" class="form-control" value="{{ product.cost_price if product else 0 }}">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Цена продажи (₽)</label>
-                            <input type="number" step="0.01" name="sale_price" class="form-control" value="{{ product.sale_price if product else 0 }}">
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Фото</label>
-                        {% if product and product.image %}
-                        <div class="mb-2">
-                            <img src="{{ url_for('static', filename='uploads/' + product.image) }}" style="max-height: 100px;" class="img-thumbnail">
-                        </div>
-                        {% endif %}
-                        <input type="file" name="image" class="form-control" accept="image/*">
-                        <small class="text-muted">JPG, PNG, GIF, WEBP</small>
-                    </div>
-
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-2"></i>{{ 'Сохранить' if action == 'edit' else 'Добавить' }}</button>
-                        <a href="{{ url_for('products') }}" class="btn btn-outline-secondary">Отмена</a>
-                    </div>
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text">
+                    {% if product.category %}<span class="badge bg-primary bg-opacity-10 text-primary">{{ product.category.name }}</span>{% endif %}
+                    {% if product.size %}<span class="badge bg-secondary bg-opacity-10 text-secondary">Размер: {{ product.size }}</span>{% endif %}
+                    {% if product.color %}<span class="badge bg-info bg-opacity-10 text-info">{{ product.color }}</span>{% endif %}
+                </p>
+                <p class="card-text small text-muted">
+                    Закупка: {{ product.cost_price }} ₽ | Продажа: {{ product.sale_price }} ₽
+                </p>
+                <p class="card-text">
+                    <strong class="{{ 'text-danger' if product.quantity == 0 else 'text-success' }}">{{ product.quantity }} шт</strong>
+                </p>
+            </div>
+            <div class="card-footer bg-white border-top-0 d-flex gap-1">
+                <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                <form method="post" action="{{ url_for('delete_product', product_id=product.id) }}" class="d-inline" onsubmit="return confirm('Удалить?');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
                 </form>
             </div>
         </div>
     </div>
+    {% else %}
+    <div class="col-12">
+        <div class="text-center text-muted py-5">
+            <i class="bi bi-inbox-fill fs-3 d-block mb-2"></i>
+            Товаров пока нет.
+            <div class="mt-2"><a href="{{ url_for('add_product') }}" class="btn btn-sm btn-primary">Добавить первый товар</a></div>
+        </div>
+    </div>
+    {% endfor %}
 </div>
 {% endblock %}
