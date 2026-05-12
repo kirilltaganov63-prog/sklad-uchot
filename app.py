@@ -63,8 +63,8 @@ class Product(db.Model):
     size = db.Column(db.String(50))
     color = db.Column(db.String(50))
     image = db.Column(db.String(200))
-    cost_price = db.Column(db.Float, default=0)      # закупочная цена
-    sale_price = db.Column(db.Float, default=0)      # цена продажи
+    cost_price = db.Column(db.Float, default=0)
+    sale_price = db.Column(db.Float, default=0)
     created_at = db.Column(db.DateTime, default=datetime.now)
     operations = db.relationship('Operation', backref='product', lazy=True)
 
@@ -72,11 +72,11 @@ class Product(db.Model):
 class Operation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
-    operation_type = db.Column(db.String(20), nullable=False)  # 'purchase' или 'sale'
+    operation_type = db.Column(db.String(20), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
-    total_amount = db.Column(db.Float, default=0)     # общая сумма операции
-    counterparty = db.Column(db.String(100))         # поставщик или покупатель
-    profit = db.Column(db.Float, default=0)          # прибыль (только для продаж)
+    total_amount = db.Column(db.Float, default=0)
+    counterparty = db.Column(db.String(100))
+    profit = db.Column(db.Float, default=0)
     created_at = db.Column(db.DateTime, default=datetime.now)
 
 
@@ -122,7 +122,7 @@ def index():
 
 
 # =========================
-# ТОВАРЫ (СПИСОК)
+# ТОВАРЫ
 # =========================
 
 @app.route('/products')
@@ -139,10 +139,6 @@ def products():
     return render_template('products.html', products=products, categories=categories,
                          search=search, selected_category=category_id)
 
-
-# =========================
-# ДОБАВИТЬ ТОВАР
-# =========================
 
 @app.route('/products/add', methods=['GET', 'POST'])
 def add_product():
@@ -178,10 +174,6 @@ def add_product():
     categories = Category.query.order_by(Category.name).all()
     return render_template('product_form.html', categories=categories, action='add')
 
-
-# =========================
-# РЕДАКТИРОВАТЬ ТОВАР
-# =========================
 
 @app.route('/products/edit/<int:product_id>', methods=['GET', 'POST'])
 def edit_product(product_id):
@@ -222,10 +214,6 @@ def edit_product(product_id):
     return render_template('product_form.html', product=product, categories=categories, action='edit')
 
 
-# =========================
-# УДАЛЕНИЕ ТОВАРА
-# =========================
-
 @app.route('/products/delete/<int:product_id>', methods=['POST'])
 def delete_product(product_id):
     product = Product.query.get_or_404(product_id)
@@ -256,10 +244,6 @@ def categories():
     return render_template('categories.html', categories=categories)
 
 
-# =========================
-# УДАЛЕНИЕ КАТЕГОРИИ
-# =========================
-
 @app.route('/categories/delete/<int:category_id>', methods=['POST'])
 def delete_category(category_id):
     category = Category.query.get_or_404(category_id)
@@ -273,7 +257,7 @@ def delete_category(category_id):
 
 
 # =========================
-# ЗАКУПКА (ПРИХОД ОТ ПОСТАВЩИКА)
+# ЗАКУПКА
 # =========================
 
 @app.route('/purchase', methods=['GET', 'POST'])
@@ -306,7 +290,7 @@ def purchase():
 
 
 # =========================
-# ПРОДАЖА (РАСХОД ПОКУПАТЕЛЮ)
+# ПРОДАЖА
 # =========================
 
 @app.route('/sales', methods=['GET', 'POST'])
