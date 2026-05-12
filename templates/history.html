@@ -22,8 +22,7 @@
                         <td class="text-nowrap">{{ op.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
                         <td>
                             {% if op.product.image %}
-                            <img src="{{ url_for('static', filename='uploads/' + op.product.image) }}"
-                                 style="width: 40px; height: 40px; object-fit: cover;" class="rounded me-2">
+                            <img src="{{ url_for('static', filename='uploads/' + op.product.image) }}" style="width: 40px; height: 40px; object-fit: cover;" class="rounded me-2">
                             {% endif %}
                             <strong>{{ op.product.name }}</strong>
                         </td>
@@ -36,7 +35,7 @@
                         <td>{{ op.counterparty or '-' }}</td>
                         <td>{{ "{:.2f}".format(op.total_amount) }} ₽</td>
                         <td class="{% if op.profit > 0 %}text-success{% elif op.profit < 0 %}text-danger{% endif %}">
-                            {{ "{:.2f}".format(op.profit) if op.profit else '-' }} ₽
+                            {{ "{:.2f}".format(op.profit) if op.profit else '-' }}
                         </td>
                     </tr>
                     {% else %}
