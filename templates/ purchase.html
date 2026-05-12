@@ -6,48 +6,34 @@
 <div class="row justify-content-center">
     <div class="col-lg-8">
         <div class="card border-success">
-            <div class="card-header bg-success bg-opacity-10 text-success d-flex align-items-center">
+            <div class="card-header bg-success bg-opacity-10 text-success">
                 <i class="bi bi-truck me-2"></i>
                 <strong>Закупка товаров (приход от поставщика)</strong>
             </div>
             <div class="card-body">
                 <form method="post">
                     <div class="mb-3">
-                        <label for="product_id" class="form-label">
-                            <i class="bi bi-box me-1"></i>Товар *
-                        </label>
-                        <select class="form-select" id="product_id" name="product_id" required>
+                        <label class="form-label">Товар *</label>
+                        <select name="product_id" class="form-select" required>
                             <option value="">Выберите товар</option>
                             {% for p in products %}
                             <option value="{{ p.id }}">
-                                {{ p.name }}
-                                {% if p.size %}({{ p.size }}){% endif %}
-                                - Закупка: {{ p.cost_price }} руб, в наличии: {{ p.quantity }} шт
+                                {{ p.name }} {% if p.size %}({{ p.size }}){% endif %} - Закупка: {{ p.cost_price }} руб, в наличии: {{ p.quantity }} шт
                             </option>
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="quantity" class="form-label">
-                                <i class="bi bi-calculator me-1"></i>Количество *
-                            </label>
-                            <input type="number" class="form-control" id="quantity" name="quantity" required min="1" placeholder="0">
-                        </div>
+                    <div class="mb-3">
+                        <label class="form-label">Количество *</label>
+                        <input type="number" name="quantity" class="form-control" required min="1">
                     </div>
                     <div class="mb-4">
-                        <label for="counterparty" class="form-label">
-                            <i class="bi bi-building me-1"></i>Поставщик
-                        </label>
-                        <input type="text" class="form-control" id="counterparty" name="counterparty" placeholder="Название компании или ИП">
+                        <label class="form-label">Поставщик</label>
+                        <input type="text" name="counterparty" class="form-control" placeholder="Название компании или ИП">
                     </div>
                     <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-success">
-                            <i class="bi bi-check-lg me-2"></i>Оформить закупку
-                        </button>
-                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-x-lg me-2"></i>Отмена
-                        </a>
+                        <button type="submit" class="btn btn-success"><i class="bi bi-check-lg me-2"></i>Оформить закупку</button>
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">Отмена</a>
                     </div>
                 </form>
             </div>
