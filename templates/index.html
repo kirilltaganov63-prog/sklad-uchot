@@ -7,13 +7,18 @@
     <div>
         <h1 class="mb-1">Склад</h1>
     </div>
-    <a href="{{ url_for('income') }}" class="btn btn-success">
-        <i class="bi bi-plus-circle me-2"></i>Приход
-    </a>
+    <div>
+        <a href="{{ url_for('purchase') }}" class="btn btn-success me-2">
+            <i class="bi bi-truck me-2"></i>Закупка
+        </a>
+        <a href="{{ url_for('sales') }}" class="btn btn-primary">
+            <i class="bi bi-cash-stack me-2"></i>Продажа
+        </a>
+    </div>
 </div>
 
 <div class="row g-4 mb-4">
-    <div class="col-md-6 col-lg-4">
+    <div class="col-md-6 col-lg-3">
         <div class="card bg-primary text-white h-100">
             <div class="card-body d-flex align-items-center">
                 <div class="icon-wrapper bg-white bg-opacity-25 me-3">
@@ -26,7 +31,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6 col-lg-4">
+    <div class="col-md-6 col-lg-3">
         <div class="card bg-success text-white h-100">
             <div class="card-body d-flex align-items-center">
                 <div class="icon-wrapper bg-white bg-opacity-25 me-3">
@@ -39,7 +44,20 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6 col-lg-4">
+    <div class="col-md-6 col-lg-3">
+        <div class="card bg-info text-white h-100">
+            <div class="card-body d-flex align-items-center">
+                <div class="icon-wrapper bg-white bg-opacity-25 me-3">
+                    <i class="bi bi-currency-ruble text-white"></i>
+                </div>
+                <div>
+                    <h5 class="card-title">Стоимость запасов</h5>
+                    <h2 class="mb-0">{{ "{:.0f}".format(total_stock_value) }} ₽</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
         <div class="card bg-warning text-white h-100">
             <div class="card-body d-flex align-items-center">
                 <div class="icon-wrapper bg-white bg-opacity-25 me-3">
@@ -54,35 +72,56 @@
     </div>
 </div>
 
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card border-success">
+            <div class="card-header bg-success bg-opacity-10 text-success">
+                <i class="bi bi-graph-up me-2"></i>Продано товаров
+            </div>
+            <div class="card-body text-center">
+                <h3>{{ total_sales_quantity }} шт</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-primary">
+            <div class="card-header bg-primary bg-opacity-10 text-primary">
+                <i class="bi bi-cash-stack me-2"></i>Выручка
+            </div>
+            <div class="card-body text-center">
+                <h3>{{ "{:.2f}".format(total_sales_amount) }} ₽</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-danger">
+            <div class="card-header bg-danger bg-opacity-10 text-danger">
+                <i class="bi bi-graph-up-arrow me-2"></i>Прибыль
+            </div>
+            <div class="card-body text-center">
+                <h3>{{ "{:.2f}".format(total_profit) }} ₽</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% if low_stock %}
 <div class="card mb-4 border-warning">
-    <div class="card-header bg-warning bg-opacity-10 text-warning d-flex align-items-center">
-        <i class="bi bi-exclamation-triangle-fill me-2"></i>
-        <strong>Товары закончились</strong>
+    <div class="card-header bg-warning bg-opacity-10 text-warning">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>Товары закончились
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table mb-0">
                 <thead>
-                    <tr>
-                        <th>Товар</th>
-                        <th>Остаток</th>
-                        <th>Действие</th>
-                    </tr>
+                    <tr><th>Товар</th><th>Остаток</th><th>Действие</th></tr>
                 </thead>
                 <tbody>
                     {% for product in low_stock %}
                     <tr>
-                        <td>
-                            <strong>{{ product.name }}</strong>
-                            {% if product.category %}<br><small class="text-muted">{{ product.category.name }}</small>{% endif %}
-                        </td>
+                        <td><strong>{{ product.name }}</strong></td>
                         <td class="text-danger fw-bold">{{ product.quantity }} шт</td>
-                        <td>
-                            <a href="{{ url_for('income') }}" class="btn btn-sm btn-outline-success">
-                                <i class="bi bi-arrow-down-circle"></i> Пополнить
-                            </a>
-                        </td>
+                        <td><a href="{{ url_for('purchase') }}" class="btn btn-sm btn-outline-success">Закупить</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -93,20 +132,15 @@
 {% endif %}
 
 <div class="card">
-    <div class="card-header d-flex align-items-center">
-        <i class="bi bi-clock-history me-2"></i>
-        <strong>Последние операции</strong>
+    <div class="card-header">
+        <i class="bi bi-clock-history me-2"></i>Последние операции
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table mb-0">
                 <thead>
                     <tr>
-                        <th>Дата</th>
-                        <th>Товар</th>
-                        <th>Тип</th>
-                        <th>Количество</th>
-                        <th>Кто</th>
+                        <th>Дата</th><th>Товар</th><th>Тип</th><th>Кол-во</th><th>Контрагент</th><th>Сумма</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -115,24 +149,16 @@
                         <td>{{ op.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
                         <td>{{ op.product.name }}</td>
                         <td>
-                            <span class="badge bg-{{ 'success' if op.operation_type == 'income' else 'danger' }}">
-                                {% if op.operation_type == 'income' %}
-                                    <i class="bi bi-arrow-down me-1"></i>Приход
-                                {% else %}
-                                    <i class="bi bi-arrow-up me-1"></i>Расход
-                                {% endif %}
+                            <span class="badge bg-{{ 'success' if op.operation_type == 'purchase' else 'primary' }}">
+                                {{ 'Закупка' if op.operation_type == 'purchase' else 'Продажа' }}
                             </span>
                         </td>
                         <td>{{ op.quantity }} шт</td>
-                        <td>{{ op.user_name or '-' }}</td>
+                        <td>{{ op.counterparty or '-' }}</td>
+                        <td>{{ "{:.2f}".format(op.total_amount) }} ₽</td>
                     </tr>
                     {% else %}
-                    <tr>
-                        <td colspan="5" class="text-center text-muted py-4">
-                            <i class="bi bi-inbox-fill fs-3 d-block mb-2"></i>
-                            Операций пока нет.
-                        </td>
-                    </tr>
+                    <tr><td colspan="6" class="text-center text-muted py-4">Операций пока нет</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
