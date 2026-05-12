@@ -6,52 +6,38 @@
 <div class="row justify-content-center">
     <div class="col-lg-8">
         <div class="card border-primary">
-            <div class="card-header bg-primary bg-opacity-10 text-primary d-flex align-items-center">
+            <div class="card-header bg-primary bg-opacity-10 text-primary">
                 <i class="bi bi-cash-stack me-2"></i>
                 <strong>Продажа товаров</strong>
             </div>
             <div class="card-body">
                 <form method="post">
                     <div class="mb-3">
-                        <label for="product_id" class="form-label">
-                            <i class="bi bi-box me-1"></i>Товар *
-                        </label>
-                        <select class="form-select" id="product_id" name="product_id" required>
+                        <label class="form-label">Товар *</label>
+                        <select name="product_id" class="form-select" required>
                             <option value="">Выберите товар</option>
                             {% for p in products %}
                             <option value="{{ p.id }}">
-                                {{ p.name }}
-                                {% if p.size %}({{ p.size }}){% endif %}
-                                - Цена: {{ p.sale_price }} руб, в наличии: {{ p.quantity }} шт
+                                {{ p.name }} {% if p.size %}({{ p.size }}){% endif %} - Цена: {{ p.sale_price }} руб, в наличии: {{ p.quantity }} шт
                             </option>
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="quantity" class="form-label">
-                                <i class="bi bi-calculator me-1"></i>Количество *
-                            </label>
-                            <input type="number" class="form-control" id="quantity" name="quantity" required min="1" placeholder="0">
-                        </div>
+                    <div class="mb-3">
+                        <label class="form-label">Количество *</label>
+                        <input type="number" name="quantity" class="form-control" required min="1">
                     </div>
                     <div class="mb-4">
-                        <label for="counterparty" class="form-label">
-                            <i class="bi bi-person-badge me-1"></i>Покупатель
-                        </label>
-                        <input type="text" class="form-control" id="counterparty" name="counterparty" placeholder="ФИО или название клиента">
+                        <label class="form-label">Покупатель</label>
+                        <input type="text" name="counterparty" class="form-control" placeholder="ФИО или название клиента">
                     </div>
                     <div class="alert alert-info">
                         <i class="bi bi-info-circle me-2"></i>
                         Сумма продажи: кол-во × цена продажи
                     </div>
                     <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-check-lg me-2"></i>Оформить продажу
-                        </button>
-                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-x-lg me-2"></i>Отмена
-                        </a>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-2"></i>Оформить продажу</button>
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">Отмена</a>
                     </div>
                 </form>
             </div>
