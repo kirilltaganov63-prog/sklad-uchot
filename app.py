@@ -257,33 +257,46 @@ def delete_category(category_id):
 
 
 # =========================
-# ЗАКУПКА
+# ЗАКУПКА (РАБОТАЕТ!)
 # =========================
 
 @app.route('/purchase', methods=['GET', 'POST'])
 def purchase():
     if request.method == 'POST':
-        product_id = int(request.form['product_id'])
-        quantity = int(request.form['quantity'])
-        counterparty = request.form.get('counterparty', '')
+        try:
+            product_id = int(request.form['product_id'])
+            quantity = int(request.form['quantity'])
+            counterparty = request.form.get('counterparty', '')
 
-        product = Product.query.get_or_404(product_id)
-        total_amount = quantity * product.cost_price
-
-        product.quantity += quantity
-        
-        operation = Operation(
-            product_id=product_id,
-            operation_type='purchase',
-            quantity=quantity,
-            total_amount=total_amount,
-            counterparty=counterparty
-        )
-
-        db.session.add(operation)
-        db.session.commit()
-        flash(f'Закупка: +{quantity} шт на сумму {total_amount:.2f} руб', 'success')
-        return redirect(url_for('purchase'))
+            # Получаем товар
+            product = Product.query.get_or_404(product_id)
+            
+            # Рассчитываем сумму
+            total_amount = quantity * product.cost_price
+            
+            # Увеличиваем количество товара
+            product.quantity = product.quantity + quantity
+            
+            # Создаем операцию
+            operation = Operation(
+                product_id=product_id,
+                operation_type='purchase',
+                quantity=quantity,
+                total_amount=total_amount,
+                counterparty=counterparty,
+                profit=0
+            )
+            
+            db.session.add(operation)
+            db.session.commit()
+            
+            flash(f'✅ Закупка: +{quantity} шт товара "{product.name}" на сумму {total_amount:.2f} руб', 'success')
+            return redirect(url_for('purchase'))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Ошибка: {str(e)}', 'error')
+            return redirect(url_for('purchase'))
 
     products = Product.query.order_by(Product.name).all()
     return render_template('purchase.html', products=products)
@@ -296,35 +309,41 @@ def purchase():
 @app.route('/sales', methods=['GET', 'POST'])
 def sales():
     if request.method == 'POST':
-        product_id = int(request.form['product_id'])
-        quantity = int(request.form['quantity'])
-        counterparty = request.form.get('counterparty', '')
+        try:
+            product_id = int(request.form['product_id'])
+            quantity = int(request.form['quantity'])
+            counterparty = request.form.get('counterparty', '')
 
-        product = Product.query.get_or_404(product_id)
+            product = Product.query.get_or_404(product_id)
 
-        if product.quantity < quantity:
-            flash(f'Недостаточно товара. В наличии: {product.quantity} шт', 'error')
-            products = Product.query.order_by(Product.name).all()
-            return render_template('sales.html', products=products)
+            if product.quantity < quantity:
+                flash(f'❌ Недостаточно товара. В наличии: {product.quantity} шт', 'error')
+                products = Product.query.order_by(Product.name).all()
+                return render_template('sales.html', products=products)
 
-        total_amount = quantity * product.sale_price
-        profit = (product.sale_price - product.cost_price) * quantity
+            total_amount = quantity * product.sale_price
+            profit = (product.sale_price - product.cost_price) * quantity
 
-        product.quantity -= quantity
-        
-        operation = Operation(
-            product_id=product_id,
-            operation_type='sale',
-            quantity=quantity,
-            total_amount=total_amount,
-            counterparty=counterparty,
-            profit=profit
-        )
+            product.quantity = product.quantity - quantity
+            
+            operation = Operation(
+                product_id=product_id,
+                operation_type='sale',
+                quantity=quantity,
+                total_amount=total_amount,
+                counterparty=counterparty,
+                profit=profit
+            )
 
-        db.session.add(operation)
-        db.session.commit()
-        flash(f'Продажа: -{quantity} шт на сумму {total_amount:.2f} руб | Прибыль: {profit:.2f} руб', 'success')
-        return redirect(url_for('sales'))
+            db.session.add(operation)
+            db.session.commit()
+            flash(f'✅ Продажа: -{quantity} шт на сумму {total_amount:.2f} руб | Прибыль: {profit:.2f} руб', 'success')
+            return redirect(url_for('sales'))
+
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Ошибка: {str(e)}', 'error')
+            return redirect(url_for('sales'))
 
     products = Product.query.order_by(Product.name).all()
     return render_template('sales.html', products=products)
