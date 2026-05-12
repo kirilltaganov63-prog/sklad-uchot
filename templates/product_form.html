@@ -14,16 +14,12 @@
                 <form method="post" enctype="multipart/form-data">
                     <div class="row">
                         <div class="col-md-8 mb-3">
-                            <label for="name" class="form-label">
-                                <i class="bi bi-box me-1"></i>Название *
-                            </label>
+                            <label for="name" class="form-label">Название *</label>
                             <input type="text" class="form-control" id="name" name="name" required
-                                   value="{{ product.name if product else '' }}" placeholder="Например: Кроссовки Nike">
+                                   value="{{ product.name if product else '' }}">
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label for="category_id" class="form-label">
-                                <i class="bi bi-tag me-1"></i>Категория
-                            </label>
+                            <label for="category_id" class="form-label">Категория</label>
                             <select class="form-select" id="category_id" name="category_id">
                                 <option value="">Без категории</option>
                                 {% for cat in categories %}
@@ -37,42 +33,47 @@
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="size" class="form-label">
-                                <i class="bi bi-rulers me-1"></i>Размер
-                            </label>
+                            <label for="size" class="form-label">Размер</label>
                             <input type="text" class="form-control" id="size" name="size"
-                                   value="{{ product.size if product else '' }}" placeholder="Например: 42 или L">
+                                   value="{{ product.size if product else '' }}">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="color" class="form-label">
-                                <i class="bi bi-palette me-1"></i>Цвет
-                            </label>
+                            <label for="color" class="form-label">Цвет</label>
                             <input type="text" class="form-control" id="color" name="color"
-                                   value="{{ product.color if product else '' }}" placeholder="Например: Черный">
+                                   value="{{ product.color if product else '' }}">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="cost_price" class="form-label">Закупочная цена (₽)</label>
+                            <input type="number" step="0.01" class="form-control" id="cost_price" name="cost_price"
+                                   value="{{ product.cost_price if product else 0 }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="sale_price" class="form-label">Цена продажи (₽)</label>
+                            <input type="number" step="0.01" class="form-control" id="sale_price" name="sale_price"
+                                   value="{{ product.sale_price if product else 0 }}">
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="image" class="form-label">
-                            <i class="bi bi-camera me-1"></i>Фото товара
-                        </label>
+                        <label for="image" class="form-label">Фото</label>
                         {% if product and product.image %}
                         <div class="mb-2">
                             <img src="{{ url_for('static', filename='uploads/' + product.image) }}"
-                                 style="max-height: 150px;" class="img-thumbnail">
+                                 style="max-height: 100px;" class="img-thumbnail">
                         </div>
                         {% endif %}
                         <input type="file" class="form-control" id="image" name="image" accept="image/*">
                         <small class="text-muted">JPG, PNG, GIF, WEBP</small>
                     </div>
 
-                    <div class="mt-4 d-flex gap-2">
+                    <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">
                             <i class="bi bi-check-lg me-2"></i>{{ 'Сохранить' if action == 'edit' else 'Добавить' }}
                         </button>
-                        <a href="{{ url_for('products') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-x-lg me-2"></i>Отмена
-                        </a>
+                        <a href="{{ url_for('products') }}" class="btn btn-outline-secondary">Отмена</a>
                     </div>
                 </form>
             </div>
