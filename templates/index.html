@@ -7,7 +7,7 @@
     <div>
         <h1 class="mb-1">Склад</h1>
     </div>
-    <a href="{{ url_for('income') }}" class="btn btn-success">
+    <a href="{{ url_for('stock_add') }}" class="btn btn-success">
         <i class="bi bi-plus-circle me-2"></i>Приход
     </a>
 </div>
@@ -16,7 +16,7 @@
     <div class="col-md-6 col-lg-4">
         <div class="card bg-primary text-white h-100">
             <div class="card-body d-flex align-items-center">
-                <div class="icon-wrapper bg-white bg-opacity-25 me-3">
+                <div class="icon-wrapper bg-black bg-opacity-20 me-3">
                     <i class="bi bi-box-seam text-white"></i>
                 </div>
                 <div>
@@ -29,7 +29,7 @@
     <div class="col-md-6 col-lg-4">
         <div class="card bg-success text-white h-100">
             <div class="card-body d-flex align-items-center">
-                <div class="icon-wrapper bg-white bg-opacity-25 me-3">
+                <div class="icon-wrapper bg-black bg-opacity-20 me-3">
                     <i class="bi bi-calculator text-white"></i>
                 </div>
                 <div>
@@ -42,7 +42,7 @@
     <div class="col-md-6 col-lg-4">
         <div class="card bg-warning text-white h-100">
             <div class="card-body d-flex align-items-center">
-                <div class="icon-wrapper bg-white bg-opacity-25 me-3">
+                <div class="icon-wrapper bg-black bg-opacity-20 me-3">
                     <i class="bi bi-exclamation-triangle text-white"></i>
                 </div>
                 <div>
@@ -79,7 +79,7 @@
                         </td>
                         <td class="text-danger fw-bold">{{ product.quantity }} шт</td>
                         <td>
-                            <a href="{{ url_for('income') }}" class="btn btn-sm btn-outline-success">
+                            <a href="{{ url_for('stock_add') }}" class="btn btn-sm btn-outline-success">
                                 <i class="bi bi-arrow-down-circle"></i> Пополнить
                             </a>
                         </td>
@@ -115,8 +115,8 @@
                         <td>{{ op.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
                         <td>{{ op.product.name }}</td>
                         <td>
-                            <span class="badge bg-{{ 'success' if op.operation_type == 'income' else 'danger' }}">
-                                {% if op.operation_type == 'income' %}
+                            <span class="badge bg-{{ 'success' if op.operation_type == 'stock_add' else 'danger' }}">
+                                {% if op.operation_type == 'stock_add' %}
                                     <i class="bi bi-arrow-down me-1"></i>Приход
                                 {% else %}
                                     <i class="bi bi-arrow-up me-1"></i>Расход
@@ -124,7 +124,7 @@
                             </span>
                         </td>
                         <td>{{ op.quantity }} шт</td>
-                        <td>{{ op.user_name or '-' }}</td>
+                        <td>{{ op.supplier_name or '-' }}</td>
                     </tr>
                     {% else %}
                     <tr>

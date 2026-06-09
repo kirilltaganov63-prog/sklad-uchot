@@ -1,7 +1,11 @@
 __pycache__/
 *.pyc
-*.db
+*.pyo
 .env
-static/uploads/*
-!static/uploads/.gitkeep
-warehouse_old.db
+warehouse.db
+*.db
+screenshots/
+*.docx
+*.txt
+.vscode/
+.~lock.*

@@ -34,8 +34,8 @@
                             </div>
                         </td>
                         <td>
-                            <span class="badge bg-{{ 'success' if op.operation_type == 'income' else 'danger' }}">
-                                {% if op.operation_type == 'income' %}
+                            <span class="badge bg-{{ 'success' if op.operation_type == 'stock_add' else 'danger' }}">
+                                {% if op.operation_type == 'stock_add' %}
                                     <i class="bi bi-arrow-down me-1"></i>Приход
                                 {% else %}
                                     <i class="bi bi-arrow-up me-1"></i>Расход
@@ -43,7 +43,7 @@
                             </span>
                         </td>
                         <td class="fw-bold">{{ op.quantity }} шт</td>
-                        <td>{{ op.user_name or '-' }}</td>
+                        <td>{{ op.supplier_name or '-' }}</td>
                     </tr>
                     {% else %}
                     <tr>
