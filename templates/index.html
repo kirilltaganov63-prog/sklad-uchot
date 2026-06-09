@@ -8,7 +8,7 @@
         <h1 class="mb-1">Склад</h1>
     </div>
     <a href="{{ url_for('stock_add') }}" class="btn btn-success">
-        <i class="bi bi-plus-circle me-2"></i>Приход
+        <i class="bi bi-plus-circle me-2"></i>Поступление
     </a>
 </div>
 
@@ -48,6 +48,19 @@
                 <div>
                     <h5 class="card-title">Закончились</h5>
                     <h2 class="mb-0">{{ low_stock|length }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="card bg-danger text-white h-100">
+            <div class="card-body d-flex align-items-center">
+                <div class="icon-wrapper bg-black bg-opacity-20 me-3">
+                    <i class="bi bi-currency-dollar text-white"></i>
+                </div>
+                <div>
+                    <h5 class="card-title">Прибыль</h5>
+                    <h2 class="mb-0">{{ total_profit }} ₽</h2>
                 </div>
             </div>
         </div>
@@ -115,11 +128,11 @@
                         <td>{{ op.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
                         <td>{{ op.product.name }}</td>
                         <td>
-                            <span class="badge bg-{{ 'success' if op.operation_type == 'stock_add' else 'danger' }}">
+                                    <span class="badge bg-{{ 'success' if op.operation_type == 'stock_add' else 'danger' }}">
                                 {% if op.operation_type == 'stock_add' %}
-                                    <i class="bi bi-arrow-down me-1"></i>Приход
+                                    <i class="bi bi-arrow-down me-1"></i>Поступление
                                 {% else %}
-                                    <i class="bi bi-arrow-up me-1"></i>Расход
+                                    <i class="bi bi-arrow-up me-1"></i>Продажа
                                 {% endif %}
                             </span>
                         </td>

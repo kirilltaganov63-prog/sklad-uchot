@@ -37,12 +37,12 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if '/stock/add' in request.path %}active{% endif %}" href="{{ url_for('stock_add') }}">
-                            <i class="bi bi-arrow-down-circle me-1"></i>Приход
+                            <i class="bi bi-arrow-down-circle me-1"></i>Поступление
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if '/sales' in request.path %}active{% endif %}" href="{{ url_for('sales') }}">
-                            <i class="bi bi-arrow-up-circle me-1"></i>Расход
+                            <i class="bi bi-arrow-up-circle me-1"></i>Продажа
                         </a>
                     </li>
                     <li class="nav-item">

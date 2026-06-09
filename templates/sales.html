@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Расход - Складской учет{% endblock %}
+{% block title %}Продажа - Складской учет{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -8,7 +8,7 @@
         <div class="card border-danger">
             <div class="card-header bg-danger bg-opacity-10 text-danger d-flex align-items-center">
                 <i class="bi bi-arrow-up-circle-fill me-2"></i>
-                <strong>Расход товаров</strong>
+                <strong>Продажа товаров</strong>
             </div>
             <div class="card-body">
                 <form method="post">
@@ -37,13 +37,13 @@
                     </div>
                     <div class="mb-4">
                         <label for="supplier_name" class="form-label">
-                            <i class="bi bi-person me-1"></i>Кому выдано
+                            <i class="bi bi-person me-1"></i>Покупатель
                         </label>
-                        <input type="text" class="form-control" id="supplier_name" name="supplier_name" placeholder="Ваше имя">
+                        <input type="text" class="form-control" id="supplier_name" name="supplier_name" placeholder="Имя покупателя">
                     </div>
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-danger">
-                            <i class="bi bi-check-lg me-2"></i>Оформить расход
+                            <i class="bi bi-check-lg me-2"></i>Оформить продажу
                         </button>
                         <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
                             <i class="bi bi-x-lg me-2"></i>Отмена

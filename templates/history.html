@@ -36,9 +36,9 @@
                         <td>
                             <span class="badge bg-{{ 'success' if op.operation_type == 'stock_add' else 'danger' }}">
                                 {% if op.operation_type == 'stock_add' %}
-                                    <i class="bi bi-arrow-down me-1"></i>Приход
+                                    <i class="bi bi-arrow-down me-1"></i>Поступление
                                 {% else %}
-                                    <i class="bi bi-arrow-up me-1"></i>Расход
+                                    <i class="bi bi-arrow-up me-1"></i>Продажа
                                 {% endif %}
                             </span>
                         </td>
