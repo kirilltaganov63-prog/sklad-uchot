@@ -4,46 +4,95 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-lg-8">
+    <div class="col-lg-10">
         <div class="card border-success">
             <div class="card-header bg-success d-flex align-items-center py-3">
-                <i class="bi bi-arrow-down-circle-fill me-2 fs-5"></i>
-                <strong class="fs-5">Поступление на склад</strong>
+                <i class="bi bi-arrow-down-circle-fill me-2 fs-4"></i>
+                <strong class="fs-4">Поступление на склад</strong>
+                <span class="ms-auto badge bg-white text-success fs-6">Новое поступление</span>
             </div>
             <div class="card-body p-4">
-                <form method="post">
-                    <div class="mb-4">
-                        <label for="product_id" class="form-label">
-                            <i class="bi bi-box me-1"></i>Товар *
-                        </label>
-                        <select class="form-select form-select-lg" id="product_id" name="product_id" required>
-                            <option value="">Выберите товар</option>
-                            {% for p in products %}
-                            <option value="{{ p.id }}" {% if p.quantity == 0 %}data-empty{% endif %}>
-                                {{ p.name }}
-                                {% if p.size %}({{ p.size }}){% endif %}
-                                — в наличии: {{ p.quantity }} шт
-                            </option>
-                            {% endfor %}
-                        </select>
+                <form method="post" id="purchaseForm">
+                    <div class="row g-4">
+                        <div class="col-md-7">
+                            <div class="mb-3">
+                                <label for="product_id" class="form-label fs-6">
+                                    <i class="bi bi-box me-1"></i>Товар *
+                                </label>
+                                <select class="form-select form-select-lg" id="product_id" name="product_id" required onchange="updateProductInfo()">
+                                    <option value="">— Выберите товар —</option>
+                                    {% for p in products %}
+                                    <option value="{{ p.id }}"
+                                        data-name="{{ p.name }}"
+                                        data-size="{{ p.size or '' }}"
+                                        data-color="{{ p.color or '' }}"
+                                        data-quantity="{{ p.quantity }}"
+                                        data-cost="{{ p.cost_price or 0 }}"
+                                        data-sale="{{ p.sale_price or 0 }}"
+                                        data-category="{{ p.category.name if p.category else '' }}"
+                                        data-image="{{ p.image or '' }}">
+                                        {{ p.name }}
+                                        {% if p.size %}({{ p.size }}){% endif %}
+                                        — {{ p.quantity }} шт
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div id="productInfo" class="p-3 rounded" style="background: var(--bg-input); min-height: 120px;">
+                                <div class="text-center text-muted py-4">
+                                    <i class="bi bi-box-seam fs-1 d-block mb-2"></i>
+                                    <small>Выберите товар</small>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-6">
-                            <label for="quantity" class="form-label">
+
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-4">
+                            <label for="quantity" class="form-label fs-6">
                                 <i class="bi bi-calculator me-1"></i>Количество *
                             </label>
-                            <input type="number" class="form-control form-control-lg" id="quantity" name="quantity" required min="1" placeholder="0">
+                            <input type="number" class="form-control form-control-lg" id="quantity" name="quantity" required min="1" placeholder="0" oninput="updateSummary()">
                         </div>
-                        <div class="col-md-6">
-                            <label for="supplier_name" class="form-label">
+                        <div class="col-md-5">
+                            <label for="supplier_name" class="form-label fs-6">
                                 <i class="bi bi-truck me-1"></i>Поставщик
                             </label>
                             <input type="text" class="form-control form-control-lg" id="supplier_name" name="supplier_name" placeholder="Название поставщика">
                         </div>
+                        <div class="col-md-3">
+                            <label class="form-label fs-6">
+                                <i class="bi bi-currency-dollar me-1"></i>Цена закупки
+                            </label>
+                            <div class="form-control form-control-lg text-white" id="costDisplay" style="background: var(--bg-input);">—</div>
+                        </div>
                     </div>
-                    <div class="d-flex gap-2">
+
+                    <div id="summary" class="mt-4 p-3 rounded d-none" style="background: var(--bg-card-hover); border: 1px solid var(--border-color);">
+                        <div class="row g-3">
+                            <div class="col-md-4 text-center">
+                                <small class="text-muted d-block">Было на складе</small>
+                                <strong class="fs-4" id="oldQty">0</strong>
+                                <small class="text-muted">шт</small>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <small class="text-muted d-block">Поступает</small>
+                                <strong class="fs-4 text-success" id="addQty">0</strong>
+                                <small class="text-muted">шт</small>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <small class="text-muted d-block">Станет</small>
+                                <strong class="fs-4" id="newQty">0</strong>
+                                <small class="text-muted">шт</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-4">
                         <button type="submit" class="btn btn-success btn-lg flex-grow-1">
-                            <i class="bi bi-check-lg me-2"></i>Оформить поступление
+                            <i class="bi bi-check-lg me-2"></i>Подтвердить поступление
                         </button>
                         <a href="{{ url_for('index') }}" class="btn btn-outline-secondary btn-lg">
                             <i class="bi bi-x-lg me-2"></i>Отмена
@@ -54,4 +103,61 @@
         </div>
     </div>
 </div>
+
+<script>
+const products = {};
+document.querySelectorAll('#product_id option[value]').forEach(opt => {
+    if (opt.value) {
+        products[opt.value] = opt.dataset;
+    }
+});
+
+function updateProductInfo() {
+    const sel = document.getElementById('product_id');
+    const info = document.getElementById('productInfo');
+    const id = sel.value;
+
+    if (!id || !products[id]) {
+        info.innerHTML = '<div class="text-center text-muted py-4"><i class="bi bi-box-seam fs-1 d-block mb-2"></i><small>Выберите товар</small></div>';
+        document.getElementById('summary').classList.add('d-none');
+        return;
+    }
+
+    const p = products[id];
+    info.innerHTML = `
+        <div class="d-flex align-items-center gap-3">
+            ${p.image ? `<img src="{{ url_for('static', filename='uploads/') }}${p.image}" style="width: 64px; height: 64px; object-fit: cover; border-radius: 8px;">` :
+            `<div style="width: 64px; height: 64px; border-radius: 8px; background: var(--bg-card); display: flex; align-items: center; justify-content: center;"><i class="bi bi-image text-muted fs-3"></i></div>`}
+            <div>
+                <strong class="fs-5 d-block">${p.name}</strong>
+                ${p.category ? `<small class="text-muted">${p.category}</small>` : ''}
+                ${p.size ? `<small class="text-muted ms-2">Размер: ${p.size}</small>` : ''}
+                ${p.color ? `<small class="text-muted ms-2">Цвет: ${p.color}</small>` : ''}
+                <div class="mt-1"><strong>В наличии: ${p.quantity} шт</strong></div>
+            </div>
+        </div>
+    `;
+    updateSummary();
+}
+
+function updateSummary() {
+    const sel = document.getElementById('product_id');
+    const qtyInput = document.getElementById('quantity');
+    const summary = document.getElementById('summary');
+    const id = sel.value;
+    const qty = parseInt(qtyInput.value) || 0;
+
+    if (!id || !products[id] || qty <= 0) {
+        summary.classList.add('d-none');
+        return;
+    }
+
+    const p = products[id];
+    const old = parseInt(p.quantity);
+    document.getElementById('oldQty').textContent = old;
+    document.getElementById('addQty').textContent = `+${qty}`;
+    document.getElementById('newQty').textContent = old + qty;
+    summary.classList.remove('d-none');
+}
+</script>
 {% endblock %}
