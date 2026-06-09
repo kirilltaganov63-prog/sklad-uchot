@@ -64,7 +64,7 @@
                         </div>
                         <div class="col-md-3">
                             <label class="form-label fs-6">
-                                <i class="bi bi-tag me-1"></i>Цена продажи
+                                <i class="bi bi-currency-ruble me-1"></i>Цена продажи
                             </label>
                             <div class="form-control form-control-lg text-white" id="salePriceDisplay" style="background: var(--bg-input);">—</div>
                         </div>
@@ -170,7 +170,7 @@ function updateSummary() {
     document.getElementById('oldQty').textContent = old;
     document.getElementById('sellQty').textContent = `-${qty}`;
     document.getElementById('newQty').textContent = Math.max(0, old - qty);
-    document.getElementById('profitDisplay').textContent = profit > 0 ? `+${profit.toFixed(0)}` : profit.toFixed(0);
+    document.getElementById('profitDisplay').textContent = profit > 0 ? `+${profit.toFixed(0)} ₽` : `${profit.toFixed(0)} ₽`;
     summary.classList.remove('d-none');
 }
 </script>
