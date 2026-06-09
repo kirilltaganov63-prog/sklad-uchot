@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Расход - Складской учет{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card border-danger">
+            <div class="card-header bg-danger bg-opacity-10 text-danger d-flex align-items-center">
+                <i class="bi bi-arrow-up-circle-fill me-2"></i>
+                <strong>Расход товаров</strong>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    <div class="mb-3">
+                        <label for="product_id" class="form-label">
+                            <i class="bi bi-box me-1"></i>Товар *
+                        </label>
+                        <select class="form-select" id="product_id" name="product_id" required>
+                            <option value="">Выберите товар</option>
+                            {% for p in products %}
+                            <option value="{{ p.id }}">
+                                {{ p.name }}
+                                {% if p.size %}({{ p.size }}){% endif %}
+                                - в наличии: {{ p.quantity }} шт
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="quantity" class="form-label">
+                                <i class="bi bi-calculator me-1"></i>Количество *
+                            </label>
+                            <input type="number" class="form-control" id="quantity" name="quantity" required min="1" placeholder="0">
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="user_name" class="form-label">
+                            <i class="bi bi-person me-1"></i>Кому выдано
+                        </label>
+                        <input type="text" class="form-control" id="user_name" name="user_name" placeholder="Ваше имя">
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-check-lg me-2"></i>Оформить расход
+                        </button>
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-lg me-2"></i>Отмена
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

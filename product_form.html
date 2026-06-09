@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Редактирование' if action == 'edit' else 'Добавление' }} товара{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <i class="bi bi-{{ 'pencil' if action == 'edit' else 'plus-circle' }} me-2"></i>
+                <strong>{{ 'Редактирование' if action == 'edit' else 'Добавление' }} товара</strong>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label for="name" class="form-label">
+                                <i class="bi bi-box me-1"></i>Название *
+                            </label>
+                            <input type="text" class="form-control" id="name" name="name" required
+                                   value="{{ product.name if product else '' }}" placeholder="Например: Кроссовки Nike">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="category_id" class="form-label">
+                                <i class="bi bi-tag me-1"></i>Категория
+                            </label>
+                            <select class="form-select" id="category_id" name="category_id">
+                                <option value="">Без категории</option>
+                                {% for cat in categories %}
+                                <option value="{{ cat.id }}" {{ 'selected' if product and product.category_id == cat.id else '' }}>
+                                    {{ cat.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="size" class="form-label">
+                                <i class="bi bi-rulers me-1"></i>Размер
+                            </label>
+                            <input type="text" class="form-control" id="size" name="size"
+                                   value="{{ product.size if product else '' }}" placeholder="Например: 42 или L">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="color" class="form-label">
+                                <i class="bi bi-palette me-1"></i>Цвет
+                            </label>
+                            <input type="text" class="form-control" id="color" name="color"
+                                   value="{{ product.color if product else '' }}" placeholder="Например: Черный">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="image" class="form-label">
+                            <i class="bi bi-camera me-1"></i>Фото товара
+                        </label>
+                        {% if product and product.image %}
+                        <div class="mb-2">
+                            <img src="{{ url_for('static', filename='uploads/' + product.image) }}"
+                                 style="max-height: 150px;" class="img-thumbnail">
+                        </div>
+                        {% endif %}
+                        <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                        <small class="text-muted">JPG, PNG, GIF, WEBP</small>
+                    </div>
+
+                    <div class="mt-4 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-lg me-2"></i>{{ 'Сохранить' if action == 'edit' else 'Добавить' }}
+                        </button>
+                        <a href="{{ url_for('products') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-lg me-2"></i>Отмена
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
