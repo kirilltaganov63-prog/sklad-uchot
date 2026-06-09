@@ -286,7 +286,12 @@ body {
 }
 
 .form-control::placeholder {
-    color: var(--text-muted);
+    color: var(--text-secondary);
+}
+
+.form-select option {
+    background: var(--bg-card);
+    color: var(--text-primary);
 }
 
 .form-control:disabled, .form-select:disabled {
@@ -294,9 +299,9 @@ body {
 }
 
 .form-label {
-    font-weight: 500;
+    font-weight: 600;
     margin-bottom: 6px;
-    color: var(--text-secondary);
+    color: var(--text-primary);
 }
 
 .input-group-text {
